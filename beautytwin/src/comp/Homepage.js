@@ -45,6 +45,19 @@ constructor(props){
             method:'POST',
             body:fd
         })*/
+
+            url:""
+        }
+    this.speakServer = this.speakServer.bind(this);
+    }
+    
+    changePage=(bool)=>{
+        this.setState({
+            page:bool
+        })
+    }
+	
+    componentDidMount(){
         console.log(this.props.fbPic);
         console.log(this.props.gName);
         
@@ -96,6 +109,28 @@ constructor(props){
 		})
 	}
     
+     speakServer(obj){
+            console.log("Speak");
+            
+            fetch("https://beautytwinserver.herokuapp.com/search/"+obj.brandName+"-"+obj.productName+"-"+obj.color).then((resp)=>{
+                return resp.json();
+            }).then((response)=>{
+                this.setState({
+                    servMsg:response,
+                    url:response.ItemSearchResponse.Items.MoreSearchResultsUrl 
+                })
+                
+                console.log(response.ItemSearchResponse.Items);
+                console.log(this.state.url);
+                
+                window.open(this.state.url, "_blank");
+            })
+         
+        }
+
+
+
+    
   render() {
       
 	  var list = this.state.data.map((obj,i)=>{
@@ -111,7 +146,7 @@ constructor(props){
 		      <p className= "productName"> {obj.brandName} {obj.productName} {obj.color}
              </p>
               <p className="usersName">
-                  {obj.userNameFB}{obj.userNameG}
+                  {obj.userNameG}
               </p>
             <StarRatingComponent 
                     name="rating" 
@@ -120,6 +155,7 @@ constructor(props){
             />
               <p className="card-text">{obj.description}</p>
 				<button className="shopBtn" onClick={this.speakServer.bind(this,obj)}>Find Online</button>
+
             </div>
           </div>
         </div>
@@ -135,7 +171,10 @@ constructor(props){
 		<div id= "homepageBG" >
 		
 		<p id="slogan" >We’re your Personal Cosmetic Lab,<br/> Helping Test and Find Makeup at a Fraction of the Price</p>
+
 		<button className="addRBtn" onClick={this.changePage.bind(this,true)}> ADD A REVIEW</button>
+
+
 		</div>
 	
 	
@@ -255,7 +294,9 @@ constructor(props){
                <NavLink onClick={this.changePage.bind(this,true)}>My Review</NavLink>
               </NavItem>
 			<NavItem id="uName" className="mr-auto">
-				 <p>Hello, {this.props.gName}!</p>
+
+				 <p>Hello, {this.props.gName}{this.props.fbName}!</p>
+
 			</NavItem>
               
             </Nav>
